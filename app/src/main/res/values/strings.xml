@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">JustNotes</string>
     <string name="retry">Retry</string>
+    <string name="new_note_hint">Enter the note content…</string>
+    <string name="save">Save</string>
+    <string name="empty_content">Note content can\'t be empty</string>
+    <string name="note_deleted">Note successfully deleteed</string>
 </resources>

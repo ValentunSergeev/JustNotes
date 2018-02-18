@@ -9,6 +9,7 @@ import com.valentun.justnotes.data.pojo.Note
 interface MainView : MvpView {
     fun showProgress()
     fun hideProgress()
-    fun notesLoaded(notes: List<Note>)
-    fun showError(message: String)
+    fun notesLoaded(notes: MutableList<Note>)
+    fun showMessage(message: String)
+    fun removeItem(position: Int)
 }

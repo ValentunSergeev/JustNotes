@@ -1,4 +1,13 @@
 package com.valentun.justnotes.data.pojo
 
-data class Note(var content: String = "",
-                var date: Long = 0)
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+
+@Entity(tableName = "note")
+data class Note(@ColumnInfo(name = "content") var content: String = "",
+                @ColumnInfo(name = "created_at") var date: Long = 0) {
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
+}

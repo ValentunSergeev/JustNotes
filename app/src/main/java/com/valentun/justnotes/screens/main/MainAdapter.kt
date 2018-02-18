@@ -9,7 +9,7 @@ import com.valentun.justnotes.data.pojo.Note
 import com.valentun.justnotes.utils.formatDate
 import kotlinx.android.synthetic.main.item_note.view.*
 
-class MainAdapter(val data: List<Note>?) : RecyclerView.Adapter<MainAdapter.MainHolder>() {
+class MainAdapter(val data: MutableList<Note>?) : RecyclerView.Adapter<MainAdapter.MainHolder>() {
     override fun getItemCount(): Int {
         return data?.size ?: 0
     }
@@ -21,6 +21,11 @@ class MainAdapter(val data: List<Note>?) : RecyclerView.Adapter<MainAdapter.Main
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         return MainHolder(view)
+    }
+
+    fun removeItem(position: Int) {
+        data?.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     inner class MainHolder(view: View) : RecyclerView.ViewHolder(view) {
