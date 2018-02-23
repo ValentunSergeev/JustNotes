@@ -2,32 +2,21 @@ package com.valentun.justnotes.screens.newNote
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View.VISIBLE
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.valentun.justnotes.R
+import com.valentun.justnotes.common.BaseActivity
 import kotlinx.android.synthetic.main.activity_new_note.*
 
 
-class NewNoteActivity : MvpAppCompatActivity(), NewNoteView {
+class NewNoteActivity : BaseActivity(), NewNoteView {
     @InjectPresenter
     lateinit var presenter: NewNotePresenter
-
-    override fun showError(message: String) {
-        Snackbar.make(container, message, Snackbar.LENGTH_SHORT)
-                .show()
-    }
 
     override fun noteSaved() {
         setResult(Activity.RESULT_OK)
         finish()
-    }
-
-    override fun showProgress() {
-        saveProgress.visibility = VISIBLE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

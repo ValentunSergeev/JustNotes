@@ -6,6 +6,14 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 
 class Repository(private val noteDao: NoteDao) : IRepository {
+    override suspend fun updateNote(note: Note) = async {
+        noteDao.updateNote(note)
+    }
+
+    override suspend fun getNote(id: Long) = async {
+        noteDao.getNote(id)
+    }
+
     override suspend fun deleteNote(note: Note): Deferred<Unit> = async {
         noteDao.deleteTask(note)
     }

@@ -3,23 +3,28 @@ package com.valentun.justnotes.screens.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.valentun.justnotes.R
+import com.valentun.justnotes.common.BaseActivity
 import com.valentun.justnotes.data.pojo.Note
 import com.valentun.justnotes.extensions.setSwipeCallback
+import com.valentun.justnotes.screens.detailNote.DetailActivity
+import com.valentun.justnotes.screens.detailNote.EXTRA_ID
 import com.valentun.justnotes.screens.newNote.NewNoteActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 
 private const val CREATE_REQUEST_CODE = 13
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
     private lateinit var adapter: MainAdapter
+
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,24 +58,24 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         progress.visibility = GONE
     }
 
-    @InjectPresenter
-    lateinit var presenter: MainPresenter
-
-    override fun showMessage(message: String) {
-        Snackbar.make(container, message, Snackbar.LENGTH_SHORT)
-                .show()
-    }
-
     override fun showProgress() {
         progress.visibility = VISIBLE
         list.visibility = GONE
     }
 
     override fun notesLoaded(notes: MutableList<Note>) {
-        adapter =  MainAdapter(notes)
+        adapter =  MainAdapter(notes, this)
         list.adapter = adapter
 
         progress.visibility = GONE
         list.visibility = VISIBLE
+    }
+
+    override fun openDetail(id: Long) {
+        startActivity<DetailActivity>(EXTRA_ID to id)
+    }
+
+    override fun itemClicked(position: Int) {
+        presenter.itemClicked(position)
     }
 }

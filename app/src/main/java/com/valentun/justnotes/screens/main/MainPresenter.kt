@@ -45,8 +45,10 @@ class MainPresenter : BasePresenter<MainView>() {
 
             viewState.removeItem(position)
             viewState.showMessage(App.INSTANCE.getString(R.string.note_deleted))
-        }, {
-            viewState.showMessage(getErrorMessage(it))
         })
+    }
+
+    fun itemClicked(position: Int) {
+        viewState.openDetail(notes[position].id)
     }
 }

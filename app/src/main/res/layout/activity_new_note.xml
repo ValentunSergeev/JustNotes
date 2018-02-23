@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:id="@+id/container"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     tools:context="com.valentun.justnotes.screens.newNote.NewNoteActivity">
 
-    <ProgressBar
-        android:id="@+id/saveProgress"
-        android:layout_width="@dimen/save_progress_size"
-        android:layout_height="@dimen/save_progress_size"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:layout_gravity="center_horizontal"/>
-
     <EditText
         android:id="@+id/noteContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:hint="@string/new_note_hint"
         android:inputType="textMultiLine"
         android:padding="8dp"
-        android:gravity="top"
+        android:gravity="top|start"
         android:background="@android:color/white"/>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
