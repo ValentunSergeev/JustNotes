@@ -4,7 +4,8 @@
     <string name="new_note_hint">Enter the note content…</string>
     <string name="save">Save</string>
     <string name="empty_content">Note content can\'t be empty</string>
-    <string name="note_deleted">Note successfully deleteed</string>
+    <string name="note_deleted">Note successfully deleted</string>
     <string name="edit">Edit</string>
     <string name="update_success">Note updated successfully</string>
+    <string name="note_added">Note successfully created</string>
 </resources>

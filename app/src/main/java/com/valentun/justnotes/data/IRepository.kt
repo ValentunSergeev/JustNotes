@@ -5,7 +5,7 @@ import kotlinx.coroutines.experimental.Deferred
 
 interface IRepository {
     suspend fun loadNotes() : Deferred<List<Note>>
-    suspend fun saveNote(content: String) : Deferred<Unit>
+    suspend fun saveNote(content: String) : Deferred<Long>
     suspend fun deleteNote(note: Note) : Deferred<Unit>
     suspend fun getNote(id: Long) : Deferred<Note>
     suspend fun updateNote(note: Note) : Deferred<Unit>

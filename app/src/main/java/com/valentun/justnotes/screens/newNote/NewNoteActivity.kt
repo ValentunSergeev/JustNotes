@@ -1,22 +1,20 @@
 package com.valentun.justnotes.screens.newNote
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.valentun.justnotes.App
 import com.valentun.justnotes.R
 import com.valentun.justnotes.common.BaseActivity
 import kotlinx.android.synthetic.main.activity_new_note.*
-
 
 class NewNoteActivity : BaseActivity(), NewNoteView {
     @InjectPresenter
     lateinit var presenter: NewNotePresenter
 
-    override fun noteSaved() {
-        setResult(Activity.RESULT_OK)
-        finish()
+    override fun initDagger() {
+        App.INSTANCE.component.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
