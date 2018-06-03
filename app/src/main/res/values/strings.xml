@@ -8,4 +8,7 @@
     <string name="edit">Edit</string>
     <string name="update_success">Note updated successfully</string>
     <string name="note_added">Note successfully created</string>
+    <string name="action_delete">Delete</string>
+    <string name="main_action_mode_title">%d selected</string>
+    <string name="action_select_all">Select all</string>
 </resources>

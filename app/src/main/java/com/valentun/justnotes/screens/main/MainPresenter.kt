@@ -13,6 +13,7 @@ import com.valentun.justnotes.screens.newNote.NOTE_CREATED_CODE
 @InjectViewState
 class MainPresenter : BasePresenter<MainView>() {
     private lateinit var notes: MutableList<Note>
+    private var isInActionMode = false
 
     init {
         App.INSTANCE.component.inject(this)
@@ -32,21 +33,34 @@ class MainPresenter : BasePresenter<MainView>() {
 
     fun deleteNote(position: Int) {
         safeAsync {
-            val item = notes.removeAt(position)
+            val item = notes[position]
+            repository.deleteNotes(item).await()
 
-            repository.deleteNote(item).await()
+            notes.remove(item)
+            viewState.removeItem(item)
 
-            viewState.removeItem(position)
             viewState.showMessage(App.INSTANCE.getString(R.string.note_deleted))
         }
     }
 
-    fun itemClicked(position: Int) {
-        router.navigateTo(SCREEN_DETAIL, notes[position].id)
+    fun itemClicked(item: Note) {
+        if (isInActionMode) {
+            viewState.toggleItemSelection(item)
+        } else {
+            router.navigateTo(SCREEN_DETAIL, item.id)
+        }
     }
 
     fun newNoteClicked() {
         router.navigateTo(SCREEN_NEW)
+    }
+
+    fun itemLongClicked(item: Note) {
+        if (isInActionMode) {
+            viewState.toggleItemSelection(item)
+        } else {
+            viewState.enableChoiceState(item)
+        }
     }
 
     private fun loadNotes() {
@@ -71,5 +85,31 @@ class MainPresenter : BasePresenter<MainView>() {
             viewState.addNote(item)
             viewState.showMessage(R.string.note_added)
         }
+
+    }
+
+    fun deleteNotes(checkedNotes: List<Note>) {
+        safeAsync {
+            notes.removeAll(checkedNotes)
+            repository.deleteNotes(*checkedNotes.toTypedArray()).await()
+
+            isInActionMode = false
+
+            viewState.removeItems(checkedNotes)
+            viewState.finishActionMode()
+        }
+    }
+
+    fun onExitActionMode() {
+        isInActionMode = false
+        viewState.finishActionMode()
+    }
+
+    fun actionModeShown() {
+        isInActionMode = true
+    }
+
+    fun selectAllClicked() {
+        viewState.toggleAll()
     }
 }

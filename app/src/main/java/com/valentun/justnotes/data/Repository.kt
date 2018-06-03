@@ -14,8 +14,8 @@ class Repository(private val noteDao: NoteDao) : IRepository {
         noteDao.getNote(id)
     }
 
-    override suspend fun deleteNote(note: Note): Deferred<Unit> = async {
-        noteDao.deleteTask(note)
+    override suspend fun deleteNotes(vararg notes: Note) = async {
+        noteDao.deleteNotes(*notes)
     }
 
     override suspend fun saveNote(content: String) = async {
