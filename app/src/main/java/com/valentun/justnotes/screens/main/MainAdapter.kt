@@ -1,12 +1,14 @@
 package com.valentun.justnotes.screens.main
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.valentun.justnotes.R
 import com.valentun.justnotes.data.pojo.Note
+import com.valentun.justnotes.extensions.copy
 import com.valentun.justnotes.utils.formatDate
 import kotlinx.android.synthetic.main.item_note.view.*
 
@@ -59,8 +61,13 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
     }
 
     fun removeItems(items: List<Note>) {
+        val temp = data.copy()
+
         data.removeAll(items)
-        notifyDataSetChanged()
+
+        val callback = NoteDiffCallback(temp, data)
+        val result = DiffUtil.calculateDiff(callback)
+        result.dispatchUpdatesTo(this)
 
         notifyIfEmpty()
     }
