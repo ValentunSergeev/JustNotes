@@ -2,8 +2,10 @@ package com.valentun.justnotes.screens.main
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.ActionMode
@@ -12,10 +14,7 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.valentun.justnotes.App
-import com.valentun.justnotes.R
-import com.valentun.justnotes.SCREEN_DETAIL
-import com.valentun.justnotes.SCREEN_NEW
+import com.valentun.justnotes.*
 import com.valentun.justnotes.common.BaseActivity
 import com.valentun.justnotes.data.pojo.Note
 import com.valentun.justnotes.extensions.setSwipeCallback
@@ -26,11 +25,21 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.intentFor
 import ru.terrakok.cicerone.android.SupportAppNavigator
 
+
 class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
+    private var adapter: MainAdapter? = null
+
+    private var pendingQuery: String? = null
+
+    private var actionMode: ActionMode? = null
+
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
+
     private val actionCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
-                R.id.action_delete -> presenter.deleteNotes(adapter.getCheckedNotes())
+                R.id.action_delete -> presenter.deleteNotes(getCheckedNotes())
                 R.id.action_select_all -> presenter.selectAllClicked()
             }
 
@@ -53,12 +62,20 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
 
     }
 
-    private lateinit var adapter: MainAdapter
+    private val searchListener = object : SearchView.OnQueryTextListener {
+        private val handler = Handler()
 
-    private var actionMode: ActionMode? = null
+        override fun onQueryTextSubmit(query: String): Boolean {
+            return false
+        }
 
-    @InjectPresenter
-    lateinit var presenter: MainPresenter
+        override fun onQueryTextChange(newText: String): Boolean {
+            handler.removeCallbacksAndMessages(null)
+
+            handler.postDelayed({ presenter.queryChanged(newText) }, SEARCH_DELAY)
+            return true
+        }
+    }
 
     override fun initDagger() {
         App.INSTANCE.component.inject(this)
@@ -78,25 +95,52 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         fab.setOnClickListener { presenter.newNoteClicked() }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        if (pendingQuery != null) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+            searchView.clearFocus()
+
+            pendingQuery = null
+        }
+
+        searchView.setOnQueryTextListener(searchListener)
+
+        return true
+    }
+
+    override fun onEmptyContent() {
+        showPlaceholder()
+    }
+
+    override fun showSearch(currentQuery: String) {
+        pendingQuery = currentQuery
+    }
+
     override fun toggleItemSelection(item: Note) {
-        adapter.toggleItemCheck(item)
+        adapter?.toggleItemCheck(item)
 
         updateTitleOrClearIfEmpty()
     }
 
     override fun toggleAll() {
-        adapter.toggleAll()
+        adapter?.toggleAll()
 
-        updateActionModeTitle(adapter.getCheckedNotes().size)
+        updateActionModeTitle(getCheckedNotes().size)
     }
 
     override fun finishActionMode() {
         actionMode?.finish()
-        adapter.resetCheckedStates()
+        adapter?.resetCheckedStates()
     }
 
     override fun removeItems(checkedNotes: List<Note>) {
-        adapter.removeItems(checkedNotes)
+        adapter?.removeItems(checkedNotes)
     }
 
     override fun enableChoiceState(item: Note) {
@@ -110,11 +154,15 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
     }
 
     override fun addNote(item: Note) {
-        adapter.addItem(item)
+        adapter?.addItem(item)
+
+        if (!list.isShown) {
+            showList()
+        }
     }
 
     override fun removeItem(item: Note) {
-        adapter.removeItem(item)
+        adapter?.removeItem(item)
 
         updateTitleOrClearIfEmpty()
     }
@@ -126,22 +174,38 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
     override fun showProgress() {
         progress.visibility = VISIBLE
         list.visibility = GONE
+        placeholder.visibility = GONE
     }
 
-    override fun notesLoaded(notes: MutableList<Note>) {
+    override fun showData(notes: MutableList<Note>) {
         adapter = MainAdapter(notes, this)
         list.adapter = adapter
 
-        progress.visibility = GONE
-        list.visibility = VISIBLE
+        if (notes.size > 0) {
+            showList()
+        } else {
+            showPlaceholder()
+        }
     }
 
     override fun itemClicked(item: Note) {
         presenter.itemClicked(item)
     }
 
+    private fun showList() {
+        list.visibility = VISIBLE
+        progress.visibility = GONE
+        placeholder.visibility = GONE
+    }
+
+    private fun showPlaceholder() {
+        list.visibility = GONE
+        progress.visibility = GONE
+        placeholder.visibility = VISIBLE
+    }
+
     private fun updateTitleOrClearIfEmpty() {
-        val count = adapter.getCheckedNotes().size
+        val count = getCheckedNotes().size
 
         if (count == 0) {
             actionMode?.finish()
@@ -149,6 +213,8 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
             updateActionModeTitle(count)
         }
     }
+
+    private fun getCheckedNotes() = adapter?.getCheckedNotes() ?: emptyList()
 
     private fun updateActionModeTitle(count: Int) {
         actionMode?.title = getString(R.string.main_action_mode_title, count)

@@ -11,4 +11,6 @@
     <string name="action_delete">Delete</string>
     <string name="main_action_mode_title">%d selected</string>
     <string name="action_select_all">Select all</string>
+    <string name="action_search">Search</string>
+    <string name="empty_list">There is no items here :(</string>
 </resources>

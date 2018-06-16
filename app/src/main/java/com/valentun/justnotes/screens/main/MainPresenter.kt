@@ -8,11 +8,14 @@ import com.valentun.justnotes.SCREEN_NEW
 import com.valentun.justnotes.common.BasePresenter
 import com.valentun.justnotes.data.getErrorMessage
 import com.valentun.justnotes.data.pojo.Note
+import com.valentun.justnotes.extensions.copy
 import com.valentun.justnotes.screens.newNote.NOTE_CREATED_CODE
 
 @InjectViewState
 class MainPresenter : BasePresenter<MainView>() {
     private lateinit var notes: MutableList<Note>
+    private var currentQuery = ""
+
     private var isInActionMode = false
 
     init {
@@ -23,6 +26,12 @@ class MainPresenter : BasePresenter<MainView>() {
 
     override fun onFirstViewAttach() {
         loadNotes()
+    }
+
+    override fun attachView(view: MainView) {
+        super.attachView(view)
+
+        if (currentQuery.isNotEmpty()) viewState.showSearch(currentQuery)
     }
 
     override fun onDestroy() {
@@ -63,13 +72,25 @@ class MainPresenter : BasePresenter<MainView>() {
         }
     }
 
+    fun queryChanged(query: String) {
+        safeAsync {
+            viewState.showProgress()
+
+            currentQuery = query
+
+            notes = repository.findNotes(query).await().toMutableList()
+
+            viewState.showData(notes.copy())
+        }
+    }
+
     private fun loadNotes() {
         safeAsync({
             viewState.showProgress()
 
             notes = repository.loadNotes().await().toMutableList()
 
-            viewState.notesLoaded(notes.toMutableList())
+            viewState.showData(notes.copy())
         }, {
             viewState.showMessage(getErrorMessage(it))
             viewState.hideProgress()

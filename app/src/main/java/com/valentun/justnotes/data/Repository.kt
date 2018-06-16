@@ -6,6 +6,12 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 
 class Repository(private val noteDao: NoteDao) : IRepository {
+    override suspend fun findNotes(query: String) = async {
+        val escapedQuery = "%$query%"
+
+        noteDao.findNotes(escapedQuery)
+    }
+
     override suspend fun updateNote(note: Note) = async {
         noteDao.updateNote(note)
     }

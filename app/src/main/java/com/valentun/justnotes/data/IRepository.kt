@@ -9,4 +9,5 @@ interface IRepository {
     suspend fun deleteNotes(vararg notes: Note) : Deferred<Unit>
     suspend fun getNote(id: Long) : Deferred<Note>
     suspend fun updateNote(note: Note) : Deferred<Unit>
+    suspend fun findNotes(query: String): Deferred<List<Note>>
 }

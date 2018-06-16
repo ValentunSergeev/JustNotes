@@ -2,7 +2,9 @@ package com.valentun.justnotes.screens.main
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.valentun.justnotes.R
 import com.valentun.justnotes.data.pojo.Note
 import com.valentun.justnotes.utils.formatDate
@@ -11,12 +13,18 @@ import kotlinx.android.synthetic.main.item_note.view.*
 class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : RecyclerView.Adapter<MainAdapter.MainHolder>() {
     private val checkedStates = ArrayList<Note>()
 
+    init {
+        notifyIfEmpty()
+    }
+
     interface Handler {
 
         fun itemClicked(item: Note)
-        fun itemLongClicked(item: Note)
-    }
 
+        fun itemLongClicked(item: Note)
+        fun onEmptyContent()
+
+    }
     override fun getItemCount(): Int {
         return data.size
     }
@@ -42,6 +50,8 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
         data.remove(item)
 
         notifyItemRemoved(position)
+
+        notifyIfEmpty()
     }
 
     fun getCheckedNotes(): List<Note> {
@@ -51,6 +61,8 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
     fun removeItems(items: List<Note>) {
         data.removeAll(items)
         notifyDataSetChanged()
+
+        notifyIfEmpty()
     }
 
     fun toggleItemCheck(item: Note) {
@@ -76,6 +88,12 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
         }
 
         notifyDataSetChanged()
+    }
+
+    private fun notifyIfEmpty() {
+        if (data.isEmpty()) {
+            eventHandler.onEmptyContent()
+        }
     }
 
 

@@ -9,6 +9,9 @@ interface NoteDao {
     @Query("select * from note order by id desc")
     fun getAllNotes(): List<Note>
 
+    @Query("select * from note where content like :query order by id desc")
+    fun findNotes(query: String): List<Note>
+
     @Query("select * from note where id = :id")
     fun getNote(id: Long): Note
 

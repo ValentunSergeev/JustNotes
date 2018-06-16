@@ -11,7 +11,7 @@ interface MainView : BaseView {
     fun showProgress()
     fun hideProgress()
 
-    fun notesLoaded(notes: MutableList<Note>)
+    fun showData(notes: MutableList<Note>)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun removeItem(item: Note)
@@ -31,4 +31,7 @@ interface MainView : BaseView {
     fun toggleAll()
 
     fun finishActionMode()
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showSearch(currentQuery: String)
 }
