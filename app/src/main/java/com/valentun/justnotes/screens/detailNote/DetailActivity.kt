@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.TextView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -48,8 +47,9 @@ class DetailActivity : BaseActivity(), DetailView {
             }
             false
         }
-    }
 
+        setTitle(R.string.detail_title)
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
 
@@ -78,8 +78,10 @@ class DetailActivity : BaseActivity(), DetailView {
     override fun showData(note: Note) {
         switchMenuItemsState(editMode = false)
 
+        setTitle(R.string.detail_title)
+
         viewContent.visibility = VISIBLE
-        editContent.visibility = GONE
+        editContent.visibility = INVISIBLE
 
         viewContent.text = note.content
         editContent.setText(note.content, TextView.BufferType.EDITABLE)
@@ -90,7 +92,9 @@ class DetailActivity : BaseActivity(), DetailView {
     override fun enableEditMode(clickedCharacterNumber: Int) {
         switchMenuItemsState(editMode = true)
 
-        viewContent.visibility = GONE
+        setTitle(R.string.detail_edit_title)
+
+        viewContent.visibility = INVISIBLE
         editContent.visibility = VISIBLE
 
         editContent.requestFocus()

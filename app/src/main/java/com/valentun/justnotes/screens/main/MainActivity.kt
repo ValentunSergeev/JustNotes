@@ -114,6 +114,12 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         return true
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        setTitle(R.string.main_title)
+    }
+
     override fun onEmptyContent() {
         showPlaceholder()
     }

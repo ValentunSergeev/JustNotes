@@ -13,4 +13,8 @@
     <string name="action_select_all">Select all</string>
     <string name="action_search">Search</string>
     <string name="empty_list">There is no items here :(</string>
+    <string name="main_title">All Notes</string>
+    <string name="detail_title">Note Detail</string>
+    <string name="new_note_title">New Note</string>
+    <string name="detail_edit_title">Edit Note</string>
 </resources>

@@ -35,4 +35,10 @@ class NewNoteActivity : BaseActivity(), NewNoteView {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
+
+    override fun onStart() {
+        super.onStart()
+
+        setTitle(R.string.new_note_title)
+    }
 }
