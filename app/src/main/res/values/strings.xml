@@ -17,4 +17,6 @@
     <string name="detail_title">Note Detail</string>
     <string name="new_note_title">New Note</string>
     <string name="detail_edit_title">Edit Note</string>
+    <string name="action_pin">Pin</string>
+    <string name="content_pin_indicator">Pin indicator</string>
 </resources>

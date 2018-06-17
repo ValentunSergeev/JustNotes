@@ -17,7 +17,7 @@ interface MainView : BaseView {
     fun removeItem(item: Note)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun addNote(item: Note)
+    fun addNote(insertIndex: Int, item: Note)
 
     fun enableChoiceState(item: Note)
 

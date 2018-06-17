@@ -5,6 +5,8 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.valentun.justnotes.R
 import com.valentun.justnotes.data.pojo.Note
@@ -27,6 +29,7 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
         fun onEmptyContent()
 
     }
+
     override fun getItemCount(): Int {
         return data.size
     }
@@ -40,9 +43,9 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
         return MainHolder(view)
     }
 
-    fun addItem(item: Note) {
-        data.add(0, item)
-        notifyItemInserted(0)
+    fun addItem(index: Int, item: Note) {
+        data.add(index, item)
+        notifyItemInserted(index)
     }
 
     fun removeItem(item: Note) {
@@ -113,6 +116,9 @@ class MainAdapter(val data: MutableList<Note>, val eventHandler: Handler) : Recy
                 val isChecked = checkedStates.contains(note)
                 val color = if (isChecked) R.color.selectedItem else R.color.white
                 itemNoteContainer.setBackgroundColor(ContextCompat.getColor(context, color))
+
+                val pinIndicatorVisibility = if (note.isPinned) VISIBLE else INVISIBLE
+                pinIndicator.visibility = pinIndicatorVisibility
 
                 setOnClickListener { eventHandler.itemClicked(note) }
                 setOnLongClickListener {

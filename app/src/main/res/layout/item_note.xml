@@ -32,6 +32,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date"
             tools:text="Note text" />
+
+        <ImageView
+            android:id="@+id/pinIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_lock_close"
+            android:contentDescription="@string/content_pin_indicator" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

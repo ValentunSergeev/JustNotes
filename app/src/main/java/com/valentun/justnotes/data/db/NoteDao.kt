@@ -6,10 +6,7 @@ import com.valentun.justnotes.data.pojo.Note
 
 @Dao
 interface NoteDao {
-    @Query("select * from note order by id desc")
-    fun getAllNotes(): List<Note>
-
-    @Query("select * from note where content like :query order by id desc")
+    @Query("select * from note where content like :query order by pinned desc, id desc")
     fun findNotes(query: String): List<Note>
 
     @Query("select * from note where id = :id")

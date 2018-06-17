@@ -48,7 +48,7 @@ class MainPresenter : BasePresenter<MainView>() {
             notes.remove(item)
             viewState.removeItem(item)
 
-            viewState.showMessage(App.INSTANCE.getString(R.string.note_deleted))
+            viewState.showMessage(R.string.note_deleted)
         }
     }
 
@@ -78,35 +78,10 @@ class MainPresenter : BasePresenter<MainView>() {
 
             currentQuery = query
 
-            notes = repository.findNotes(query).await().toMutableList()
+            notes = repository.getNotes(query).await()
 
             viewState.showData(notes.copy())
         }
-    }
-
-    private fun loadNotes() {
-        safeAsync({
-            viewState.showProgress()
-
-            notes = repository.loadNotes().await().toMutableList()
-
-            viewState.showData(notes.copy())
-        }, {
-            viewState.showMessage(getErrorMessage(it))
-            viewState.hideProgress()
-        })
-    }
-
-    private fun newNoteCreated(id: Long) {
-        safeAsync {
-            val item = repository.getNote(id).await()
-
-            notes.add(0, item)
-
-            viewState.addNote(item)
-            viewState.showMessage(R.string.note_added)
-        }
-
     }
 
     fun deleteNotes(checkedNotes: List<Note>) {
@@ -132,5 +107,41 @@ class MainPresenter : BasePresenter<MainView>() {
 
     fun selectAllClicked() {
         viewState.toggleAll()
+    }
+
+    fun changePinState(note: Note) {
+        safeAsync {
+            note.isPinned = !note.isPinned
+
+            repository.updateNote(note).await()
+            notes = repository.getNotes(currentQuery).await()
+
+            viewState.showData(notes.copy())
+            viewState.finishActionMode()
+        }
+    }
+
+    private fun loadNotes() {
+        safeAsync({
+            viewState.showProgress()
+
+            notes = repository.getNotes(currentQuery).await()
+
+            viewState.showData(notes.copy())
+        }, {
+            viewState.showMessage(getErrorMessage(it))
+            viewState.hideProgress()
+        })
+    }
+
+    private fun newNoteCreated(id: Long) {
+        safeAsync {
+            val item = repository.getNote(id).await()
+            notes = repository.getNotes(currentQuery).await()
+
+            viewState.addNote(notes.indexOf(item), item)
+            viewState.showMessage(R.string.note_added)
+        }
+
     }
 }

@@ -8,4 +8,6 @@
     <color name="selectedItem">#EEEEEE</color>
     <color name="actionMode">#757575</color>
     <color name="actionModeStatusBar">#616161</color>
+
+    <color name="icon">#727272</color>
 </resources>

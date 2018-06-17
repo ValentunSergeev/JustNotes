@@ -41,6 +41,7 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
             when (item.itemId) {
                 R.id.action_delete -> presenter.deleteNotes(getCheckedNotes())
                 R.id.action_select_all -> presenter.selectAllClicked()
+                R.id.action_pin -> presenter.changePinState(getCheckedNotes().first())
             }
 
             return true
@@ -131,13 +132,13 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
     override fun toggleItemSelection(item: Note) {
         adapter?.toggleItemCheck(item)
 
-        updateTitleOrClearIfEmpty()
+        updateStateOrHideIfEmpty()
     }
 
     override fun toggleAll() {
         adapter?.toggleAll()
 
-        updateActionModeTitle(getCheckedNotes().size)
+        updateActionModeState(getCheckedNotes().size)
     }
 
     override fun finishActionMode() {
@@ -159,8 +160,8 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         presenter.itemLongClicked(item)
     }
 
-    override fun addNote(item: Note) {
-        adapter?.addItem(item)
+    override fun addNote(insertIndex: Int, item: Note) {
+        adapter?.addItem(insertIndex, item)
 
         if (!list.isShown) {
             showList()
@@ -170,7 +171,7 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
     override fun removeItem(item: Note) {
         adapter?.removeItem(item)
 
-        updateTitleOrClearIfEmpty()
+        updateStateOrHideIfEmpty()
     }
 
     override fun hideProgress() {
@@ -210,20 +211,31 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         placeholder.visibility = VISIBLE
     }
 
-    private fun updateTitleOrClearIfEmpty() {
+    private fun updateStateOrHideIfEmpty() {
         val count = getCheckedNotes().size
 
         if (count == 0) {
             actionMode?.finish()
         } else {
-            updateActionModeTitle(count)
+            updateActionModeState(count)
         }
     }
 
     private fun getCheckedNotes() = adapter?.getCheckedNotes() ?: emptyList()
 
-    private fun updateActionModeTitle(count: Int) {
+    private fun updateActionModeState(count: Int) {
         actionMode?.title = getString(R.string.main_action_mode_title, count)
+
+        val pinItem = actionMode?.menu?.findItem(R.id.action_pin)
+
+        if (count == 1) {
+            pinItem?.isVisible = true
+
+            val iconId = if (getCheckedNotes().first().isPinned) R.drawable.ic_lock_open else R.drawable.ic_lock_close
+            pinItem?.setIcon(iconId)
+        } else {
+            pinItem?.isVisible = false
+        }
     }
 
     class MainNavigator(activity: FragmentActivity) : SupportAppNavigator(activity, 0) {
