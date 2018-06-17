@@ -26,7 +26,7 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
+        app:srcCompat="@drawable/ic_add"
         app:fabSize="normal" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -10,4 +10,5 @@
     <color name="actionModeStatusBar">#616161</color>
 
     <color name="icon">#727272</color>
+    <color name="divider">#1F000000</color>
 </resources>
