@@ -78,10 +78,6 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         }
     }
 
-    override fun initDagger() {
-        App.INSTANCE.component.inject(this)
-    }
-
     override fun provideNavigator() = MainNavigator(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,9 +85,9 @@ class MainActivity : BaseActivity(), MainView, MainAdapter.Handler {
         setContentView(R.layout.activity_main)
 
         list.setHasFixedSize(true)
-        list.setSwipeCallback(RIGHT or LEFT, { _, position ->
+        list.setSwipeCallback(RIGHT or LEFT) { _, position ->
             presenter.deleteNote(position)
-        })
+        }
 
         fab.setOnClickListener { presenter.newNoteClicked() }
     }

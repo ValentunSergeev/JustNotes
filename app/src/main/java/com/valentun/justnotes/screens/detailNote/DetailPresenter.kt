@@ -10,10 +10,6 @@ import com.valentun.justnotes.data.pojo.Note
 class DetailPresenter(private val id: Long) : BasePresenter<DetailView>() {
     private lateinit var note: Note
 
-    init {
-        App.INSTANCE.component.inject(this)
-    }
-
     override fun onFirstViewAttach() {
         loadNote()
     }

@@ -19,9 +19,7 @@ class MainPresenter : BasePresenter<MainView>() {
     private var isInActionMode = false
 
     init {
-        App.INSTANCE.component.inject(this)
-
-        router.setResultListener(NOTE_CREATED_CODE, { newNoteCreated(it as Long) })
+        router.setResultListener(NOTE_CREATED_CODE) { newNoteCreated(it as Long) }
     }
 
     override fun onFirstViewAttach() {

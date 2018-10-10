@@ -1,25 +1,14 @@
 package com.valentun.justnotes
 
 import android.app.Application
-import com.valentun.justnotes.di.AppComponent
-import com.valentun.justnotes.di.DaggerAppComponent
-import com.valentun.justnotes.di.modules.AppModule
+import com.valentun.justnotes.di.dataModule
+import com.valentun.justnotes.di.navigationModule
+import org.koin.android.ext.android.startKoin
 
 class App : Application() {
-    lateinit var component: AppComponent
-        private set
-
-    companion object {
-        lateinit var INSTANCE: App
-    }
-
     override fun onCreate() {
         super.onCreate()
 
-        INSTANCE = this
-
-        component = DaggerAppComponent.builder()
-                .appModule(AppModule(this))
-                .build()
+        startKoin(this, listOf(dataModule, navigationModule))
     }
 }

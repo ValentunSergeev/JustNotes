@@ -13,10 +13,6 @@ class NewNoteActivity : BaseActivity(), NewNoteView {
     @InjectPresenter
     lateinit var presenter: NewNotePresenter
 
-    override fun initDagger() {
-        App.INSTANCE.component.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_note)

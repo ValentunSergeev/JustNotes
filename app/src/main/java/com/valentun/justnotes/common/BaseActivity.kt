@@ -3,19 +3,17 @@ package com.valentun.justnotes.common
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import com.arellomobile.mvp.MvpAppCompatActivity
 import org.jetbrains.anko.contentView
 import org.jetbrains.anko.doFromSdk
+import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
-import javax.inject.Inject
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
-    @Inject
-    lateinit var navigatorHolder: NavigatorHolder
+    private val navigatorHolder: NavigatorHolder by inject()
 
     private var navigator: Navigator? = null
 
@@ -32,8 +30,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initDagger()
-
         super.onCreate(savedInstanceState)
 
         navigator = provideNavigator()
@@ -56,8 +52,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
             window.statusBarColor = color
         }
     }
-
-    protected abstract fun initDagger()
 
     protected open fun provideNavigator() : Navigator = SimpleNavigator(this)
 }

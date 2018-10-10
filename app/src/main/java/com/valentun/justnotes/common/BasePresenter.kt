@@ -6,15 +6,15 @@ import com.valentun.justnotes.data.getErrorMessage
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import ru.terrakok.cicerone.Router
-import javax.inject.Inject
 
-abstract class BasePresenter<V : BaseView> : MvpPresenter<V>() {
-    @Inject
-    lateinit var repository: IRepository
+abstract class BasePresenter<V : BaseView> : MvpPresenter<V>(), KoinComponent {
 
-    @Inject
-    lateinit var router: Router
+    val repository : IRepository by inject()
+
+    val router: Router by inject()
 
     private val defaultCatch: suspend CoroutineScope.(Throwable) -> Unit = {
         viewState.showMessage(getErrorMessage(it))
